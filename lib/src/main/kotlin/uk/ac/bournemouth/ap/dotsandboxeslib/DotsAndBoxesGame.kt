@@ -68,7 +68,9 @@ interface DotsAndBoxesGame {
     /**
      * Add a listener that can react to general game state changes.
      */
-    fun addOnGameChangeListener(listener: GameChangeListener)
+    fun addOnGameChangeListener(listener: GameChangeListener){
+        fun onGameChange(game: DotsAndBoxesGame){}
+    }
 
     /**
      * Remove the given listener from the game over listeners.
