@@ -1,5 +1,4 @@
 package uk.ac.bournemouth.ap.dotsandboxeslib
-
 import uk.ac.bournemouth.ap.dotsandboxeslib.matrix.SparseMatrix
 
 /**

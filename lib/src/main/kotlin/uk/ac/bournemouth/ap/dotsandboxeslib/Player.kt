@@ -12,7 +12,9 @@ sealed class Player
  * Base class for human players. In principle the type can be used as is, but a subclass can be
  * created to allow for attaching information such as player name.
  */
-open class HumanPlayer : Player()
+open class HumanPlayer : Player() {
+    var name = "Human Player"
+}
 
 /**
  * Base class for computer players. This class adds the [makeMove] function that allows the player
