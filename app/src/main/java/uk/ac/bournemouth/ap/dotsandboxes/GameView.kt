@@ -70,7 +70,6 @@ class GameView : View {
     private val columns = 3
     private val rows = 4
     private val players = listOf(HumanPlayer(), AIRandom())
-    var gameFinished = false
     var lineXBoundingLine = -1
     var lineYBoundingLine = -1
     var mStudentDotsBoxGame: StudentDotsBoxGame = StudentDotsBoxGame(columns, rows, players)
@@ -106,8 +105,8 @@ class GameView : View {
         canvas.drawRect(100F, 1400F, 200F, 1500F, mComputerPaint)
         canvas.drawText("Human", 225F, 1320F, mText)
         canvas.drawText("Computer", 225F, 1470F, mText)
-        var scoreHuman = mStudentDotsBoxGame.getScores()[0]
-        var scoreAi = mStudentDotsBoxGame.getScores()[1]
+        val scoreHuman = mStudentDotsBoxGame.getScores()[0]
+        val scoreAi = mStudentDotsBoxGame.getScores()[1]
         canvas.drawText("$scoreHuman", 135F, 1320F, mText)
         canvas.drawText("$scoreAi", 135F, 1470F, mText)
 
@@ -186,6 +185,7 @@ class GameView : View {
             if (scoreHuman == scoreAi) {
                 canvas.drawText("Winner is: Draw! You both scored $scoreAi", 90F, 100F, mText)
             }
+            canvas.drawText("Reset app to play again.", 100F, 1200F, mText)
         }
     }
 
@@ -208,7 +208,6 @@ class GameView : View {
             //closer to the top or the bottom line, to work out the correct bounding line to return.
             //A line will not be drawn if the click was close to a box corner, to remove ambiguity
             //as to what line the user intended to press.
-
             if (ev.x.toInt() > padding+boxWidth && ev.x.toInt() < padding+(boxWidth)*2){
                 boxXcoordinate = 1
                 if (ev.x.toInt() < padding+boxWidth+(boxWidth/8)){
@@ -242,7 +241,6 @@ class GameView : View {
             //closer to the left or the right line, to work out the correct bounding line to return.
             //A line will again not be drawn if the click was close to a box corner, to remove
             //ambiguity as to what line the user intended to press.
-
             if (ev.y.toInt() > padding+(boxWidth*2) && ev.y.toInt() < padding+(boxWidth*3)){
                 boxYcoordinate = 2
                 if (ev.y.toInt() < padding+(boxWidth*2)+(boxWidth/8)){
@@ -287,7 +285,7 @@ class GameView : View {
             //These conditions check if there is only one definitive decision as to what line was
             //pressed. If e.g. topLine == true & leftLine == true, click was too close to box corner.
             if (topLine == true && leftLine == null) { //If top line was pressed
-                var boxLines = mStudentDotsBoxGame.StudentBox(boxX= boxXcoordinate,
+                val boxLines = mStudentDotsBoxGame.StudentBox(boxX= boxXcoordinate,
                                                               boxY= boxYcoordinate).boundingLines
                 //returns the top bounding box line's x and y coordinates, calculated in logic.
                 lineXBoundingLine = boxLines.elementAt(0).lineX
@@ -295,7 +293,7 @@ class GameView : View {
 
             }
             if (topLine == false && leftLine == null){ //If bottom line was pressed
-                var boxLines = mStudentDotsBoxGame.StudentBox(boxX= boxXcoordinate,
+                val boxLines = mStudentDotsBoxGame.StudentBox(boxX= boxXcoordinate,
                                                               boxY= boxYcoordinate).boundingLines
                 //returns the bottom bounding box line's x and y coordinates, calculated in logic.
                 lineXBoundingLine = boxLines.elementAt(1).lineX
@@ -303,7 +301,7 @@ class GameView : View {
 
             }
             if (topLine == null && leftLine == true){ //if left line was pressed
-                var boxLines = mStudentDotsBoxGame.StudentBox(boxX= boxXcoordinate,
+                val boxLines = mStudentDotsBoxGame.StudentBox(boxX= boxXcoordinate,
                                                               boxY= boxYcoordinate).boundingLines
                 //returns the left bounding box line's x and y coordinates, calculated in logic.
                 lineXBoundingLine = boxLines.elementAt(2).lineX
@@ -311,7 +309,7 @@ class GameView : View {
 
             }
             if (topLine == null && leftLine == false){ //if right line was pressed
-                var boxLines = mStudentDotsBoxGame.StudentBox(boxX= boxXcoordinate,
+                val boxLines = mStudentDotsBoxGame.StudentBox(boxX= boxXcoordinate,
                                                               boxY= boxYcoordinate).boundingLines
                 //returns the right bounding box line's x and y coordinates, calculated in logic.
                 lineXBoundingLine = boxLines.elementAt(3).lineX
@@ -320,13 +318,18 @@ class GameView : View {
             }
 
             //If the move was valid, then these variables would not be -1. So it'll return true and
-            //call drawLine()
-            return if (lineXBoundingLine != -1 && lineYBoundingLine != -1) {
-                mStudentDotsBoxGame.StudentLine(
-                    lineX = lineXBoundingLine,
-                    lineY = lineYBoundingLine).drawLine()
-                true
-            } else {
+            //call drawLine(). If the line is already drawn however, it will not call drawLine.
+            return try {
+                if (lineXBoundingLine != -1 && lineYBoundingLine != -1) {
+                    mStudentDotsBoxGame.StudentLine(
+                        lineX = lineXBoundingLine,
+                        lineY = lineYBoundingLine
+                                                   ).drawLine()
+                    true
+                } else {
+                    false
+                }
+            } catch (err: IllegalStateException) {
                 false
             }
         }

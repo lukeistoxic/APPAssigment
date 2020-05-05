@@ -35,11 +35,6 @@ class StudentDotsBoxGame(columns: Int, rows: Int, players: List<Player>) : Abstr
         }
     }
 
-    /**
-     * This is an inner class as it needs to refer to the game to be able to look up the correct
-     * lines and boxes. Alternatively you can have a game property that does the same thing without
-     * it being an inner class.
-     */
     inner class StudentLine(lineX: Int, lineY: Int) : AbstractLine(lineX, lineY) {
         override var isDrawn: Boolean = false
 
@@ -73,6 +68,7 @@ class StudentDotsBoxGame(columns: Int, rows: Int, players: List<Player>) : Abstr
 
         override fun drawLine() {
             var drawnBox = false
+
             if (lines[lineX, lineY].isDrawn) { //checks if the line is already drawn.
                 throw IllegalStateException()
             }
